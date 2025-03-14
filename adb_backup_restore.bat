@@ -1,24 +1,17 @@
 @echo off
-:: Demander à l'utilisateur de saisir le chemin du dossier de sauvegarde
 set /p BACKUP_DIR="Entrez le chemin du dossier de sauvegarde (ex: D:\Backup_ADB) : "
-
-:: Vérifier si ADB est installé
 adb version >nul 2>&1
 if %errorlevel% neq 0 (
     echo ADB n'est pas installé. Installez-le d'abord.
     pause
     exit /b 1
 )
-
-:: Vérifier si le téléphone est connecté
 adb devices | findstr "device$" >nul
 if %errorlevel% neq 0 (
     echo Aucun appareil trouvé. Assurez-vous que le mode Debug USB est activé.
     pause
     exit /b 1
 )
-
-:: Vérifier si le dossier de sauvegarde existe, sinon le créer
 if not exist "%BACKUP_DIR%" (
     echo Création du dossier...
     mkdir "%BACKUP_DIR%"
