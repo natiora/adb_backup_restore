@@ -1,4 +1,10 @@
 @echo off
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+    echo Demande d'élévation...
+    powershell -Command "Start-Process cmd -ArgumentList '/c %~s0' -Verb RunAs"
+    exit
+)
 set /p BACKUP_DIR="Entrez le chemin du dossier de sauvegarde (ex: D:\Backup_ADB) : "
 adb version >nul 2>&1
 if %errorlevel% neq 0 (
