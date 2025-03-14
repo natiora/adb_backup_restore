@@ -118,9 +118,7 @@ if "%backup_choice%"=="5" (
     )
 )
 if "%backup_choice%"=="6" (
-    mkdir "%BACKUP_DIR%\tout" 2>nul
-    cd
-    adb pull /sdcard/ "%BACKUP_DIR%\tout"
+    adb pull /sdcard/ "%BACKUP_DIR%\"
     if %errorlevel% neq 0 (
         echo Erreur lors de la sauvegarde de tout.
     ) else (
@@ -183,7 +181,7 @@ if "%restore_choice%"=="5" (
     )
 )
 if "%restore_choice%"=="6" (
-    adb push "%BACKUP_DIR%\tout" /sdcard/
+    adb push "%BACKUP_DIR%\" /sdcard/
     if %errorlevel% neq 0 (
         echo Erreur lors de la restauration de tout.
     ) else (
@@ -246,8 +244,8 @@ if "%sync_choice%"=="4" (
 )
 if "%sync_choice%"=="5" (
     echo Synchronisation de tout en cours...
-    adb pull /sdcard/ "%BACKUP_DIR%\tout"
-    adb push "%BACKUP_DIR%\tout" /sdcard/
+    adb pull /sdcard/ "%BACKUP_DIR%\"
+    adb push "%BACKUP_DIR%\" /sdcard/
     if %errorlevel% neq 0 (
         echo Erreur lors de la synchronisation de tout.
     ) else (
