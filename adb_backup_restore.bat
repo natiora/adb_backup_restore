@@ -24,7 +24,7 @@ if %errorlevel% neq 0 (
 )
 
 :: Demander le dossier de sauvegarde sur le PC
-set /p BACKUP_DIR="Entrez le chemin du dossier de sauvegarde sur le PC (ex: D:\Backup_ADB) : "
+set /p BACKUP_DIR=Entrez le chemin du dossier de sauvegarde sur le PC (ex: D:\Backup_ADB) : 
 
 :: Vérifier si le dossier existe, sinon le créer
 if not exist "%BACKUP_DIR%" (
@@ -45,7 +45,7 @@ echo 1. Sauvegarde (Android vers PC)
 echo 2. Restauration (PC vers Android)
 echo 3. Synchronisation (bidirectionnelle)
 echo 4. Quitter
-set /p action="Entrez votre choix (1-4) : "
+set /p action=Entrez votre choix (1-4) : 
 
 if "%action%"=="1" goto SAUVEGARDE
 if "%action%"=="2" goto RESTAURATION
@@ -65,7 +65,7 @@ echo 3. Vidéos
 echo 4. Musique
 echo 5. Documents
 echo 6. Tout
-set /p backup_choice="Entrez votre choix (1-6) : "
+set /p backup_choice=Entrez votre choix (1-6) : 
 
 if "%backup_choice%"=="1" (
     mkdir "%BACKUP_DIR%\applications" 2>nul
@@ -138,7 +138,7 @@ echo 3. Vidéos
 echo 4. Musique
 echo 5. Documents
 echo 6. Tout
-set /p restore_choice="Entrez votre choix (1-6) : "
+set /p restore_choice=Entrez votre choix (1-6) : 
 
 if "%restore_choice%"=="1" (
     adb restore "%BACKUP_DIR%\applications.ab"
@@ -200,7 +200,7 @@ echo 2. Vidéos
 echo 3. Musique
 echo 4. Documents
 echo 5. Tout
-set /p sync_choice="Entrez votre choix (1-5) : "
+set /p sync_choice=Entrez votre choix (1-5) : 
 
 if "%sync_choice%"=="1" (
     echo Synchronisation des photos en cours...
