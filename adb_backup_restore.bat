@@ -55,7 +55,8 @@ echo 2. Photos
 echo 3. Videos
 echo 4. Musique
 echo 5. Documents
-echo 6. Tout
+echo 6. Download
+echo 7. Tout
 echo ================================
 set /p backup_choice=Entrez votre choix (1-6) : 
 
@@ -80,6 +81,10 @@ if "%backup_choice%"=="5" (
     echo Sauvegarde des documents terminee !
 )
 if "%backup_choice%"=="6" (
+    adb pull /sdcard/Download "%BACKUP_DIR%/sdcard/"
+    echo Sauvegarde de tout terminee !
+)
+if "%backup_choice%"=="7" (
     adb pull /sdcard/ "%BACKUP_DIR%/sdcard/"
     echo Sauvegarde de tout terminee !
 )
@@ -97,7 +102,8 @@ echo 2. Photos
 echo 3. Videos
 echo 4. Musique
 echo 5. Documents
-echo 6. Tout
+echo 6. Download
+echo 7. Tout
 echo ================================
 set /p restore_choice=Entrez votre choix (1-6) : 
 
@@ -122,6 +128,10 @@ if "%restore_choice%"=="5" (
     echo Restauration des documents terminee !
 )
 if "%restore_choice%"=="6" (
+    adb push "%BACKUP_DIR%/sdcard/Download" /sdcard/
+    echo Restauration de tout terminee !
+)
+if "%restore_choice%"=="7" (
     adb push "%BACKUP_DIR%/sdcard/" /sdcard/
     echo Restauration de tout terminee !
 )
@@ -136,6 +146,7 @@ echo 1. Photos
 echo 2. Videos
 echo 3. Musique
 echo 4. Documents
+echo 6. Download
 echo 5. Tout
 set /p sync_choice=Entrez votre choix (1-5) : 
 
@@ -235,25 +246,48 @@ if "%sync_choice%"=="4" (
     echo Synchronisation des documents terminee ! 📄
 )
 
+:: Synchronisation des telechargements
+if "%sync_choice%"=="4" (
+    echo Synchronisation des telechargements en cours...
+
+    :: Suppression des telechargement supprimes sur le PC
+    for /f "delims=" %%f in ('dir "%BACKUP_DIR%/sdcard/Documents" /b /a-d') do (
+        if not exist "%BACKUP_DIR%/sdcard/Documents/%%f" (
+            echo Suppression du fichier %%f sur le telephone...
+            adb shell rm -rf /sdcard/Download/%%f
+        )
+    )
+
+    :: Suppression des telechargement supprimes sur le telephone
+    adb shell "for f in $(ls /sdcard/Download/); do if [ ! -f '%BACKUP_DIR%/sdcard/Download/$f' ]; then rm -rf /sdcard/Download/$f; fi; done"
+
+    :: Recuperation des nouveaux telechargement du telephone
+    adb pull /sdcard/Download/ "%BACKUP_DIR%/sdcard/"
+
+    :: Envoi des nouveaux telechargement du PC vers le telephone
+    adb push "%BACKUP_DIR%/sdcard/Download" /sdcard/
+
+    echo Synchronisation des telechargement terminee ! 📄
+)
 :: Synchronisation de tout
-if "%sync_choice%"=="5" (
+if "%sync_choice%"=="6" (
     echo Synchronisation de tout en cours...
 
     :: Synchronisation des photos
-    adb pull /sdcard/DCIM/ "%BACKUP_DIR%/sdcard/photos"
-    adb push "%BACKUP_DIR%/sdcard/photos" /sdcard/DCIM/
+    adb pull /sdcard/DCIM/ "%BACKUP_DIR%/sdcard/"
+    adb push "%BACKUP_DIR%/sdcard/photos" /sdcard/
 
     :: Synchronisation des videos
-    adb pull /sdcard/Videos/ "%BACKUP_DIR%/sdcard/Videos"
-    adb push "%BACKUP_DIR%/sdcard/Videos" /sdcard/Videos/
+    adb pull /sdcard/Videos/ "%BACKUP_DIR%/sdcard/"
+    adb push "%BACKUP_DIR%/sdcard/Videos" /sdcard/
 
     :: Synchronisation de la musique
-    adb pull /sdcard/Music/ "%BACKUP_DIR%/sdcard/Music"
-    adb push "%BACKUP_DIR%/sdcard/Music" /sdcard/Music/
+    adb pull /sdcard/Music/ "%BACKUP_DIR%/sdcard/"
+    adb push "%BACKUP_DIR%/sdcard/Music" /sdcard/
 
     :: Synchronisation des documents
-    adb pull /sdcard/Documents/ "%BACKUP_DIR%/sdcard/Documents"
-    adb push "%BACKUP_DIR%/sdcard/Documents" /sdcard/Documents/
+    adb pull /sdcard/Documents/ "%BACKUP_DIR%/sdcard/"
+    adb push "%BACKUP_DIR%/sdcard/Documents" /sdcard/
 
     echo Synchronisation de tout terminee ! 🔄
 )
